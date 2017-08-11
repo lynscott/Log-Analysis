@@ -2,7 +2,7 @@
 Made by Lyn Scott with Python 3.6, Vagrant 1.9.7 and VirtualBox 5.1.26.
 
 ## Intro
-This code is designed to connect to the PostGre SQL database for a fictional news website. 
+This code is designed to connect to the PostgreSQL database for a fictional news website. 
 The news db holds information on: articles, authors, and a log of the news website's activity with visits, links, and HTTP responses.
 This code will query the db for the answer to three questions:
 - What are the top three articles and how many views do they have?
