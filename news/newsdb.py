@@ -17,12 +17,12 @@ def connect(database_name="news"):
 def get_top_articles():
     """Return the top articles from the 'database' with the amount of views"""
     db, cursor = connect()
-    top_articles = """select articles.title, count(log.path) as num
-    from articles left join log
-          on log.path = concat('/article/', articles.slug)
-          and log.status = '200 OK'
-    group by title
-    order by num desc limit 3;"""
+    top_articles = """SELECT articles.title, count(log.path) AS num
+                      FROM articles LEFT JOIN log
+                      ON log.path = concat('/article/', articles.slug)
+                      AND log.status = '200 OK'
+                      GROUP BY title
+                      ORDER BY num DESC LIMIT 3;"""
     cursor.execute(top_articles)
     print("Most popular articles:" '\n')
     for (title, num) in cursor.fetchall():
@@ -34,13 +34,13 @@ def get_top_articles():
 def get_top_authors():
     """Return top authors from the database with amount of views"""
     db, cursor = connect()
-    top_authors = """select authors.name, count(log.path) as num
-          from authors, log, articles
-          where log.path = concat('/article/', articles.slug)
-          and articles.author = authors.id
-          and log.status = '200 OK'
-      group by authors.name
-      order by num desc;"""
+    top_authors = """SELECT authors.name, count(log.path) AS num
+                     FROM authors, log, articles
+                     WHERE log.path = concat('/article/', articles.slug)
+                     AND articles.author = authors.id
+                     AND log.status = '200 OK'
+                     GROUP BY authors.name
+                     ORDER BY num DESC;"""
     cursor.execute(top_authors)
     print("Most popular authors:" '\n')
     for (name, num) in cursor.fetchall():
@@ -52,13 +52,13 @@ def get_top_authors():
 def get_errors():
     """View days when HTTP response error exceeds 1%"""
     db, cursor = connect()
-    errors = """select date, round(100* (errors * 1.0 / total),1) as percentage
-           from (select date(time),
-           count(case when status = '404 NOT FOUND'
-           then 1 else null end) as errors,
-           count(*) as total
-           from log group by date(time)) as visits
-           where round(100* (errors * 1.0 / total),1) > 1.0;"""
+    errors = """SELECT date, round(100* (errors * 1.0 / total),1) AS percentage
+                FROM (select date(time),
+                count(case when status = '404 NOT FOUND'
+                THEN 1 else null end) AS errors,
+                count(*) AS total
+                FROM log group by date(time)) AS visits
+                WHERE round(100* (errors * 1.0 / total),1) > 1.0;"""
     cursor.execute(errors)
     print("Days with more than 1% errors:" '\n')
     for (date, percentage) in cursor.fetchall():
